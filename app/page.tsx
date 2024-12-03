@@ -68,7 +68,7 @@ export default function Dashboard() {
             <ModeToggle />
           </div>
           <div className="flex-1">
-            <NavBar items={navItems} title={title} />
+            <NavBar items={navItems} />
           </div>
           <div className="mt-auto p-4">
             <Card x-chunk="dashboard-02-chunk-0">
@@ -102,10 +102,9 @@ export default function Dashboard() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col">
-              <SheetTitle>SheetContent Should Not Be Visible</SheetTitle>
+              <SheetTitle>{title}</SheetTitle>
               <NavBar
                 items={navItems}
-                title={title}
                 navClassName="grid gap-2 text-lg font-medium"
                 linkClassName="flex items-center gap-2 text-lg font-semibold"
                 badgeClassName="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
