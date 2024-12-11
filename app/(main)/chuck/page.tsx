@@ -1,11 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getChuckysWisdom } from "@/app/services/httpClient";
+import {
+  getChuckysWisdom,
+  getAllChuckysWisdomsCount,
+} from "@/app/services/chuckyApi";
 import { ChuckysWisdom } from "@/app/types/ChuckysWisdom";
+import { ReceiptText } from "lucide-react";
+import { format } from "date-fns";
 
 export default function ChucksWisdom() {
-  const [wisdom, setWisdom] = useState<string>("");
+  const [wisdom, setWisdom] = useState<ChuckysWisdom>();
+  const [wisdomCount, setWisdomCount] = useState<number>(0);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -13,9 +19,14 @@ export default function ChucksWisdom() {
     async function fetchWisdom() {
       try {
         setLoading(true);
-        const data: ChuckysWisdom = await getChuckysWisdom();
-        console.log(data);
-        setWisdom(data.wisdom);
+
+        // Fetch single wisdom
+        const wisdomData: ChuckysWisdom = await getChuckysWisdom();
+        setWisdom(wisdomData);
+
+        // Fetch wisdom count
+        const count = await getAllChuckysWisdomsCount();
+        setWisdomCount(count);
       } catch (err) {
         setError("Failed to load wisdom.");
       } finally {
@@ -34,11 +45,39 @@ export default function ChucksWisdom() {
     return <p className="text-center text-red-500">{error}</p>;
   }
 
+  // Format the creationDate
+  const formattedDate = wisdom?.creationDate
+    ? format(new Date(wisdom.creationDate), "PP") // e.g., "Oct 10, 2024"
+    : "Unknown";
+
   return (
     <>
       <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
         <div className="flex items-center">
           <h1 className="text-lg font-semibold md:text-2xl">Chucky's Wisdom</h1>
+        </div>
+        <div className="flex flex-col space-y-4">
+          {/* Three-column Section */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="flex items-center justify-center rounded-lg border border-dashed min-h-[5rem] md:min-h-[8rem] shadow-sm">
+              <div className="flex flex-col items-center justify-center space-y-4">
+                <div className="text-2xl">Amount of wisdoms:</div>
+                <div className="text-center text-6xl text-red-600">
+                  {wisdomCount}
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center justify-center rounded-lg border border-dashed min-h-[5rem] md:min-h-[8rem] shadow-sm">
+              <p className="text-center text-gray-600">
+                Times asked for wisdom today - {formattedDate}
+              </p>
+            </div>
+            <div className="flex items-center justify-center rounded-lg border border-dashed min-h-[5rem] md:min-h-[8rem] shadow-sm">
+              <p className="text-center text-gray-600">
+                Day of when wisdom was needed most
+              </p>
+            </div>
+          </div>
         </div>
         <div
           className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm"
@@ -49,7 +88,7 @@ export default function ChucksWisdom() {
             <div className="flex flex-col justify-center items-start space-y-4">
               <h1 className="text-4xl font-bold text-gray-800">
                 <span className="text-5xl text-green-50">"</span>
-                <span className="text-5xl text-green-50">{wisdom}</span>
+                <span className="text-5xl text-green-50">{wisdom?.wisdom}</span>
                 <span className="text-5xl text-green-50">"</span>
               </h1>
               <p className="text-lg text-gray-600">
@@ -60,9 +99,9 @@ export default function ChucksWisdom() {
             {/* Second Column - Image */}
             <div className="flex justify-center items-center">
               <img
-                src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/098a4b50-32fc-4c96-98b3-d95ea291cdcb/dhjkh0b-546de778-d3bc-4420-aaf6-897852c2c405.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzA5OGE0YjUwLTMyZmMtNGM5Ni05OGIzLWQ5NWVhMjkxY2RjYlwvZGhqa2gwYi01NDZkZTc3OC1kM2JjLTQ0MjAtYWFmNi04OTc4NTJjMmM0MDUucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.CqJOqwKENouRm5UaYao7mlVHJTi_oE1blcjzZBdRtjU"
+                src="https://debbie-johansson.com/wp-content/uploads/2017/05/childs-play-chucky.jpg"
                 alt="Chuck Norris"
-                className="rounded-lg shadow-lg max-w-full h-auto"
+                className="rounded-lg shadow-lg max-w-full h-auto scale-80"
               />
             </div>
           </div>
