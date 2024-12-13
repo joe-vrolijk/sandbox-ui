@@ -13,7 +13,12 @@ export default function Dashboard() {
         >
           <div className="flex flex-col items-center gap-1 text-center">
             <h3 className="text-2xl font-bold tracking-tight">
-              You have no content
+              <ul>
+                <li>Make a table of all inception</li>
+                <li>Add a button / form to add </li>
+                <li>Add a remove button on the table</li>
+                <li>Add a change button on the table to change the title</li>
+              </ul>
             </h3>
             <p className="text-sm text-muted-foreground">Add some content!</p>
             <Button className="mt-4">Some Button</Button>

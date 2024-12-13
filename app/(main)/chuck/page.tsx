@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import {
   getChuckysWisdom,
   getAllChuckysWisdomsCount,
+  getWisdomAskedToday,
+  getWisdomNeededMost,
 } from "@/app/services/chuckyApi";
 import { ChuckysWisdom } from "@/app/types/ChuckysWisdom";
 import { ReceiptText } from "lucide-react";
@@ -12,6 +14,8 @@ import { format } from "date-fns";
 export default function ChucksWisdom() {
   const [wisdom, setWisdom] = useState<ChuckysWisdom>();
   const [wisdomCount, setWisdomCount] = useState<number>(0);
+  const [wisdomNeededMost, setWisdomNeededMost] = useState<string>();
+  const [wisdomAskedToday, setWisdomAskedToday] = useState<number>(0);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -27,6 +31,14 @@ export default function ChucksWisdom() {
         // Fetch wisdom count
         const count = await getAllChuckysWisdomsCount();
         setWisdomCount(count);
+
+        // Fetch wisdom asked today
+        const countWisdomAskedToday = await getWisdomAskedToday();
+        setWisdomAskedToday(countWisdomAskedToday);
+
+        // Fetch wisdom needed most
+        const wisdomNeededMost = await getWisdomNeededMost();
+        setWisdomNeededMost(wisdomNeededMost);
       } catch (err) {
         setError("Failed to load wisdom.");
       } finally {
@@ -45,11 +57,6 @@ export default function ChucksWisdom() {
     return <p className="text-center text-red-500">{error}</p>;
   }
 
-  // Format the creationDate
-  const formattedDate = wisdom?.creationDate
-    ? format(new Date(wisdom.creationDate), "PP") // e.g., "Oct 10, 2024"
-    : "Unknown";
-
   return (
     <>
       <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
@@ -67,15 +74,25 @@ export default function ChucksWisdom() {
                 </div>
               </div>
             </div>
+
             <div className="flex items-center justify-center rounded-lg border border-dashed min-h-[5rem] md:min-h-[8rem] shadow-sm">
-              <p className="text-center text-gray-600">
-                Times asked for wisdom today - {formattedDate}
-              </p>
+              <div className="flex flex-col items-center justify-center space-y-4">
+                <div className="text-2xl">Times asked for wisdom today:</div>
+                <div className="text-center text-6xl text-red-600">
+                  {wisdomAskedToday}
+                </div>
+              </div>
             </div>
+
             <div className="flex items-center justify-center rounded-lg border border-dashed min-h-[5rem] md:min-h-[8rem] shadow-sm">
-              <p className="text-center text-gray-600">
-                Day of when wisdom was needed most
-              </p>
+              <div className="flex flex-col items-center justify-center space-y-4">
+                <div className="text-2xl">
+                  Day of when wisdom was needed most:
+                </div>
+                <div className="text-center text-6xl text-red-600">
+                  {wisdomNeededMost}
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -13,7 +13,11 @@ export default function Dashboard() {
         >
           <div className="flex flex-col items-center gap-1 text-center">
             <h3 className="text-2xl font-bold tracking-tight">
-              You have no content
+            <ul>
+                <li>Make a grid of all entries (Old but gold category) With Image, Title, Year</li>
+                <li>Make a button per entry to be able to download it</li>
+                <li>Flag which ones are downloaded. Set a status (Queued, Downloaded, In progress, Failed)</li>
+              </ul>
             </h3>
             <p className="text-sm text-muted-foreground">Add some content!</p>
             <Button className="mt-4">Some Button</Button>
